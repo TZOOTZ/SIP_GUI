@@ -1,110 +1,149 @@
-# SIPTester GUI
+# SIPTester GUI TZOOTZ RESEARCH
 
-Generador de tráfico SIP con interfaz gráfica. Permite:
-- **Crear y monitorear llamadas SIP** (usando TCP).
-- **Enviar `OPTIONS`** periódicos para mantener vivo el trunk o comprobar disponibilidad.
-- **Transmitir audio** real (a partir de un MP3) vía RTP para pruebas end-to-end.
+Una herramienta moderna para pruebas de trunks SIP con interfaz gráfica intuitiva.
 
----
+## 🚀 Descripción
 
-## Características
+SIPTester GUI es una aplicación que permite generar, monitorear y administrar llamadas SIP a través de una interfaz gráfica amigable. Diseñada para simplificar las pruebas de rendimiento y calidad en sistemas de telefonía IP.
 
-- **Invocación de llamadas**  
-  INVITE -> 100 Trying / 180 Ringing -> 200 OK -> ACK.  
-  Define cuántas llamadas enviar y a qué ritmo (calls/s).
+### Características Principales
 
-- **Inyección de audio**  
-  Decodifica MP3 a PCM y lo transforma a G.711/Opus (u otro códec SIP) para envío vía RTP.
+- 📞 Generación y gestión de llamadas SIP vía TCP
+- 🔄 Monitoreo de trunks mediante OPTIONS periódicos
+- 🎵 Inyección de audio personalizado para pruebas end-to-end
+- 📊 Estadísticas en tiempo real
+- 🎯 Interfaz intuitiva para configuración y monitoreo
 
-- **Keep-alive con `OPTIONS`**  
-  Envío periódico para checar que el trunk esté “vivo” (UP o DOWN).
+## 🛠️ Arquitectura
 
-- **Interfaz gráfica**  
-  Muestra:  
-  - Estado de trunk (respuestas `OPTIONS`).  
-  - Número de llamadas activas/fallidas.  
-  - Tiempo de llamada, codecs y detalles de señalización.
+### Backend (Server)
 
-- **Logs y estadísticas**  
-  Logs en tiempo real de las transacciones SIP y métricas de conectividad.
+El servidor está construido con Node.js y se estructura en módulos especializados:
 
----
+- `sipStack.js`: Control de señalización SIP
+- `rtpHandler.js`: Gestión del transporte RTP
+- `audioPlayer.js`: Procesamiento y codificación de audio
+- `trunkMonitor.js`: Sistema de monitoreo de trunks
 
-## Arquitectura y Árbol de Carpetas
+### Frontend (Client)
 
-```plaintext
-project/
-├─ server/
-│   ├─ src/
-│   │   ├─ config/
-│   │   │   └─ default.js            // Config general (puertos SIP, logs, etc.)
-│   │   ├─ sip/
-│   │   │   ├─ sipStack.js           // Manejo SIP (INVITE, OPTIONS, etc.)
-│   │   │   ├─ rtpHandler.js         // Manejo RTP (envío/recepción)
-│   │   │   └─ audioPlayer.js        // Decodifica MP3 y codifica a códec SIP
-│   │   ├─ controllers/
-│   │   │   └─ callsController.js     // Lógica de llamadas
-│   │   ├─ services/
-│   │   │   └─ trunkMonitor.js        // Envío periódico de OPTIONS
-│   │   ├─ routes/
-│   │   │   └─ index.js              // Endpoints o WebSockets
-│   │   ├─ utils/
-│   │   │   └─ logger.js             // Manejo de logs
-│   │   └─ server.js                 // Punto de arranque
-│   ├─ package.json
-│   └─ README.md
-│
-├─ client/
-│   ├─ public/
-│   │   └─ index.html
-│   ├─ src/
-│   │   ├─ components/
-│   │   │   ├─ CallMonitor.jsx
-│   │   │   ├─ TrunkStatus.jsx
-│   │   │   └─ ConfigPanel.jsx
-│   │   ├─ pages/
-│   │   │   └─ Home.jsx
-│   │   ├─ services/
-│   │   │   └─ api.js
-│   │   └─ App.jsx
-│   ├─ package.json
-│   └─ README.md
-│
-└─ docker/
-    ├─ Dockerfile.server
-    ├─ Dockerfile.client
-    └─ docker-compose.yml
+Interfaz desarrollada en React con componentes modulares:
 
-## Requisitos
+- `TrunkStatus`: Visualización del estado del trunk
+- `CallMonitor`: Panel de llamadas activas
+- `ConfigPanel`: Configuración del sistema
 
-- **Sistema Operativo**: Linux (Ubuntu/Debian/CentOS) recomendado.  
-- **Node.js** >= 14 (o el stack que prefieras).  
-- **Librerías**:  
-  - Stack SIP/RTP (PJSIP, ReSIProcate, etc.).  
-  - Soporte para decodificación MP3 (FFmpeg, libmp3lame, etc.).  
-- **(Opcional)** Docker para contenedores.
+## ✨ Funcionalidades
 
----
+### Gestión de Llamadas SIP
+- Flujo completo de señalización (INVITE → 100/180 → 200 OK → ACK)
+- Control de concurrencia y tasa de llamadas
+- Monitoreo en tiempo real
 
-## Instalación y Ejecución
+### Manejo de Audio
+- Soporte para múltiples formatos (MP3, WAV)
+- Transcodificación automática a G.711/Opus
+- Transmisión RTP bidireccional
 
-1. **Clona este repositorio**  
-   ```bash
-   git clone https://github.com/usuario/SIPTester-GUI.git
-   cd SIPTester-GUI
+### Monitoreo de Trunks
+- Keep-alive mediante OPTIONS
+- Detección automática de caídas
+- Estadísticas de disponibilidad
 
+## 📋 Requisitos
 
-## Uso
-Config Panel
-Ingresa IP/puerto del servidor SIP, intervalos de OPTIONS, codecs, etc.
-Subir archivo de audio
-Carga un MP3. La app lo decodifica y prepara para envío vía RTP.
-Generar llamadas
-Ajusta cuántas llamadas simultáneas o la tasa de generación (calls/s).
-Observa en tiempo real el estado de cada llamada (RINGING, CONNECTED, etc.).
-Monitoreo
-Visualiza la respuesta de OPTIONS (UP, DOWN).
-Ve cuántas llamadas están en RINGING, CONNECTED, FAIL, etc.
-Logs
-Todos los mensajes SIP y estadísticas se almacenan en consola o en archivo, según configuración.
+### Sistema Operativo
+- Linux (Ubuntu/Debian/CentOS recomendado)
 
+### Software
+- Node.js v14+
+- Librerías SIP y RTP
+- Docker (opcional)
+
+## 🚀 Instalación
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/tzootz/siptester-gui.git
+
+# Instalar dependencias del backend
+cd siptester-gui/backend
+npm install
+
+# Instalar dependencias del frontend
+cd ../frontend
+npm install
+
+# Iniciar la aplicación
+npm run dev
+```
+
+## 📖 Guía de Uso
+
+1. **Configuración Inicial**
+   - Configurar IP/puerto del servidor SIP
+   - Establecer parámetros de OPTIONS
+   - Seleccionar códec preferido
+
+2. **Preparación de Audio**
+   - Subir archivo de audio para pruebas
+   - Verificar la codificación
+
+3. **Generación de Tráfico**
+   - Definir número de llamadas simultáneas
+   - Establecer tasa de llamadas por segundo
+   - Iniciar generación de tráfico
+
+4. **Monitoreo**
+   - Observar estados de llamadas
+   - Revisar estadísticas en tiempo real
+   - Verificar estado del trunk
+
+## 🔧 Configuración
+
+```yaml
+# Ejemplo de configuración (config.yaml)
+sip:
+  host: "192.168.1.100"
+  port: 5060
+  transport: "tcp"
+
+monitoring:
+  options_interval: 10
+  call_rate: 10
+  max_concurrent_calls: 100
+
+audio:
+  codec: "G711"
+  input_file: "test.mp3"
+```
+
+## 🎯 Casos de Uso
+
+- **Pruebas de Carga**: Validación de capacidad de PBX
+- **Monitoreo de Trunks**: Supervisión continua de disponibilidad
+- **Pruebas de Audio**: Validación de calidad y transcodificación
+- **Simulación de Tráfico**: Generación de escenarios realistas
+
+## 🤝 Contribución
+
+Las contribuciones son bienvenidas. Por favor:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add: Amazing Feature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
+
+## 👥 Autores
+
+- **[TZOOTZ RESEARCH]** - *SIP GENERATOR* - [TuGitHub](https://github.com/tzootz)
+
+## 🙏 Idea original de Jerónimo Mosquera
+
+- PJSIP por su excelente stack SIP
+- La comunidad de VoIP por su continuo apoyo
